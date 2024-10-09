@@ -1,0 +1,38 @@
+name: Pre-Commit Message Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  check-commit-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check commit messages
+        run: |
+          # Get the commit message
+          if [[ $GITHUB_EVENT_NAME == "push" ]]; then
+            COMMIT_MESSAGE=$(git log -1 --pretty=%B $GITHUB_SHA)
+          else
+            COMMIT_MESSAGE=$(git log -1 --pretty=%B $GITHUB_HEAD_REF)
+          fi
+
+          # Define valid prefixes
+          VALID_PREFIXES=("hotfix/" "feature/" "bugfix/" "chore/")
+
+          # Check if commit message starts with a valid prefix
+          for PREFIX in "${VALID_PREFIXES[@]}"; do
+            if [[ $COMMIT_MESSAGE == $PREFIX* ]]; then
+              echo "Valid commit message: $COMMIT_MESSAGE"
+              exit 0
+            fi
+          done
+
+          echo "Invalid commit message: $COMMIT_MESSAGE"
+          echo "Commit message must start with one of the following prefixes: ${VALID_PREFIXES[*]}"
+          exit 1
