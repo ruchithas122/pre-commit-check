@@ -10,7 +10,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
       - name: Check commit messages
         run: |
           # Get the commit message
