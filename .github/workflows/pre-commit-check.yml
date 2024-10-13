@@ -1,10 +1,11 @@
 name: Pre-Commit Message Check
 
 on:
-  push:
+  #push:
+  pull_request:
     branches:
       - main
-  pull_request:
+  # pull_request:
 jobs:
   check-commit-message:
     runs-on: ubuntu-latest
